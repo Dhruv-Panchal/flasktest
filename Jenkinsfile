@@ -22,9 +22,10 @@ pipeline{
 		stage('Push to hub'){
 			steps{
 				script {
-					docker.withRegistry('', 'dockerhub')
-					dockerImage.push();
-					dockerImage.push('latest')
+					docker.withRegistry('', 'dockerhub'){
+						dockerImage.push();
+						dockerImage.push('latest')
+					}
 				}
 			}
 		}
