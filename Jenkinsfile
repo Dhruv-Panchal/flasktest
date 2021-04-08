@@ -1,4 +1,3 @@
-
 pipeline{
 	agent {  docker { image 'python:3.7-slim'} }
 	stages {
@@ -13,11 +12,23 @@ pipeline{
 				echo "Test"
 			}
 		}
-		stage('Integration test'){
-			steps {
-				echo "Integration test"
+		stage("Build Docker"){
+			steps{
+				script{
+					dockerImage = docker.build("dhruvpanchal96/flasktest:${env.BUILD_TAG}")
+				}
 			}
 		}
+		stage('Push to hub'){
+			steps{
+				script {
+					docker.withRegistry('', 'dockerhub')
+					dockerImage.push();
+					dockerImage.push('latest')
+				}
+			}
+		}
+		
 	}
 	post {
 		always {
